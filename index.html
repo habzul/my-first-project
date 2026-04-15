@@ -1,2 +1,375 @@
-<h1>selamat datang Sesi Latihan Git MARA</h1>
-<p>Training GIT MARA</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Landing Page</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #15213e;
+      --primary: #38bdf8;
+      --secondary: #a5b4fc;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 40%), var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: rgba(15, 23, 42, 0.95);
+      border-right: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .brand div {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.75rem;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+    }
+
+    .brand h1 {
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+    }
+
+    nav ul {
+      list-style: none;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    nav a {
+      display: block;
+      padding: 0.9rem 1rem;
+      border-radius: 0.9rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    main {
+      padding: 2rem;
+      display: grid;
+      gap: 2.5rem;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2rem;
+      background: var(--surface);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+    }
+
+    .slider {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      display: grid;
+      place-items: center;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 2rem;
+      display: grid;
+      align-items: center;
+      justify-items: start;
+      gap: 1rem;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      position: relative;
+    }
+
+    .slide h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      max-width: 14ch;
+    }
+
+    .slide p {
+      max-width: 44ch;
+      color: var(--muted);
+    }
+
+    .slide button {
+      border: none;
+      padding: 0.95rem 1.6rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      color: #0f172a;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dots {
+      display: flex;
+      gap: 0.6rem;
+      position: absolute;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .dot {
+      width: 0.9rem;
+      height: 0.9rem;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.5);
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .dot.active {
+      background: var(--primary);
+      transform: scale(1.2);
+    }
+
+    .section-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 1.5rem;
+      padding: 1.75rem;
+      min-height: 190px;
+    }
+
+    .card h3 {
+      margin-bottom: 0.95rem;
+      font-size: 1.15rem;
+    }
+
+    .card p {
+      color: var(--muted);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title h2 {
+      font-size: 1.5rem;
+    }
+
+    .section-title a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      }
+
+      .hero {
+        border-radius: 1.5rem;
+      }
+
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .sidebar {
+        padding: 1.5rem 1rem;
+      }
+
+      nav a {
+        padding: 0.85rem 0.95rem;
+      }
+
+      .slide {
+        padding: 1.5rem;
+      }
+
+      .dots {
+        bottom: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div></div>
+        <h1>Brand Studio</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a class="active" href="#home">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="slider">
+          <article class="slide active">
+            <span>Creative solutions for modern teams</span>
+            <h2>Design with speed and clarity</h2>
+            <p>Launch your next project with an elegant layout, intuitive navigation, and a slider-built story for mobile-first experiences.</p>
+            <button>Explore now</button>
+          </article>
+          <article class="slide">
+            <span>Grow your digital presence</span>
+            <h2>Engage customers with motion</h2>
+            <p>Use a polished homepage experience to highlight your services, features, and customer value across every device.</p>
+            <button>View services</button>
+          </article>
+          <article class="slide">
+            <span>Built for responsiveness</span>
+            <h2>Fluid layout on any screen</h2>
+            <p>From small screens to desktops, the design adapts cleanly with a side navigation and bold section hierarchy.</p>
+            <button>Start today</button>
+          </article>
+          <div class="dots">
+            <span class="dot active" data-index="0"></span>
+            <span class="dot" data-index="1"></span>
+            <span class="dot" data-index="2"></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <div class="section-title">
+          <h2>Feature overview</h2>
+          <a href="#services">See all</a>
+        </div>
+        <div class="section-grid">
+          <div class="card">
+            <h3>Responsive design</h3>
+            <p>A layout built for all devices, with a sidebar navigation that becomes compact on smaller screens.</p>
+          </div>
+          <div class="card">
+            <h3>Interactive slider</h3>
+            <p>Highlight key messages with a smooth slider, animated transitions, and dot-based controls for quick access.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="services">
+        <div class="section-title">
+          <h2>Our services</h2>
+          <a href="#contact">Contact us</a>
+        </div>
+        <div class="section-grid">
+          <div class="card">
+            <h3>Brand strategy</h3>
+            <p>Custom digital strategy and design systems that help your products stand out and connect with users.</p>
+          </div>
+          <div class="card">
+            <h3>UI/UX experience</h3>
+            <p>Design polished user journeys with accessible components, clean typography, and purposeful spacing.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="section-title">
+          <h2>Get in touch</h2>
+          <a href="#home">Back to top</a>
+        </div>
+        <div class="card">
+          <h3>Start your project</h3>
+          <p>Ready to build a responsive site with strong navigation and elegant presentation? Reach out for a fast setup.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    © 2026 Responsive Studio. All rights reserved.
+  </footer>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    let current = 0;
+
+    function goToSlide(index) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => goToSlide(Number(dot.dataset.index)));
+    });
+
+    setInterval(() => {
+      goToSlide((current + 1) % slides.length);
+    }, 4500);
+  </script>
+</body>
+</html>
