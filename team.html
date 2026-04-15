@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .expertise-section {
+            padding: 40px 30px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        .expertise-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .expertise-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .expertise-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .expertise-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .expertise-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .team-section {
+            padding: 40px 30px;
+        }
+
+        .team-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2em;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .team-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4em;
+        }
+
+        .team-info {
+            padding: 25px;
+        }
+
+        .team-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .team-designation {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .team-details {
+            margin-bottom: 20px;
+        }
+
+        .team-details p {
+            margin-bottom: 8px;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        .team-details i {
+            margin-right: 10px;
+            color: #667eea;
+            width: 16px;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s;
+            width: 100%;
+        }
+
+        .contact-btn:hover {
+            opacity: 0.9;
+        }
+
+        .chatbot-section {
+            background: #f8f9fa;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .chatbot-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .chatbot-section p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .chatbot-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .chatbot-btn:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .expertise-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Meet Our Team</h1>
+            <p>Expert professionals dedicated to delivering exceptional results</p>
+        </div>
+
+        <div class="expertise-section">
+            <h2>Our Expertise</h2>
+            <div class="expertise-grid">
+                <div class="expertise-card">
+                    <h3>Web Development</h3>
+                    <p>Full-stack web development with modern technologies including React, Node.js, and cloud platforms.</p>
+                </div>
+                <div class="expertise-card">
+                    <h3>UI/UX Design</h3>
+                    <p>Creating intuitive and beautiful user interfaces that provide exceptional user experiences.</p>
+                </div>
+                <div class="expertise-card">
+                    <h3>Digital Marketing</h3>
+                    <p>Strategic digital marketing solutions to grow your online presence and reach your target audience.</p>
+                </div>
+                <div class="expertise-card">
+                    <h3>Data Analytics</h3>
+                    <p>Transforming data into actionable insights to drive business decisions and growth.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-section">
+            <h2>Team Members</h2>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-image">
+                        👨‍💻
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">John Smith</h3>
+                        <span class="team-designation">Senior Web Developer</span>
+                        <div class="team-details">
+                            <p><i>📧</i> john.smith@company.com</p>
+                            <p><i>📱</i> +1 (555) 123-4567</p>
+                            <p><i>🏢</i> Web Development Team Lead</p>
+                        </div>
+                        <button class="contact-btn" onclick="openChatbot('John Smith')">Chat with John</button>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image">
+                        👩‍🎨
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">Sarah Johnson</h3>
+                        <span class="team-designation">UI/UX Designer</span>
+                        <div class="team-details">
+                            <p><i>📧</i> sarah.johnson@company.com</p>
+                            <p><i>📱</i> +1 (555) 234-5678</p>
+                            <p><i>🏢</i> Design Team Lead</p>
+                        </div>
+                        <button class="contact-btn" onclick="openChatbot('Sarah Johnson')">Chat with Sarah</button>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image">
+                        👨‍💼
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">Mike Davis</h3>
+                        <span class="team-designation">Marketing Manager</span>
+                        <div class="team-details">
+                            <p><i>📧</i> mike.davis@company.com</p>
+                            <p><i>📱</i> +1 (555) 345-6789</p>
+                            <p><i>🏢</i> Digital Marketing Team</p>
+                        </div>
+                        <button class="contact-btn" onclick="openChatbot('Mike Davis')">Chat with Mike</button>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image">
+                        👩‍🔬
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">Emily Chen</h3>
+                        <span class="team-designation">Data Analyst</span>
+                        <div class="team-details">
+                            <p><i>📧</i> emily.chen@company.com</p>
+                            <p><i>📱</i> +1 (555) 456-7890</p>
+                            <p><i>🏢</i> Analytics Team</p>
+                        </div>
+                        <button class="contact-btn" onclick="openChatbot('Emily Chen')">Chat with Emily</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chatbot-section">
+            <h2>Need to Communicate with Our Team?</h2>
+            <p>Connect with our team members instantly through our integrated chatbot system</p>
+            <button class="chatbot-btn" onclick="openChatbot()">Open Team Chatbot</button>
+        </div>
+    </div>
+
+    <script>
+        function openChatbot(memberName = '') {
+            // This function can be integrated with your chatbot system
+            if (memberName) {
+                alert(`Opening chat with ${memberName}. This would connect to your chatbot system.`);
+            } else {
+                alert('Opening team chatbot. This would connect to your main chatbot interface.');
+            }
+
+            // Example integration:
+            // window.open('chatbot.html?member=' + encodeURIComponent(memberName), '_blank');
+            // or integrate with your preferred chatbot service
+        }
+    </script>
+</body>
+</html>
