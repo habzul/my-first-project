@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Team Analytics</title>
+  <style>
+    :root {
+      --bg: #08101f;
+      --surface: #122236;
+      --panel: rgba(18, 34, 54, 0.95);
+      --border: rgba(148, 163, 184, 0.16);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --success: #22c55e;
+      --warning: #fbbf24;
+      --danger: #fb7185;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 40%), var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: rgba(7, 13, 27, 0.98);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 2rem;
+    }
+
+    .brand div {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.75rem;
+      background: linear-gradient(135deg, var(--accent), #818cf8);
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+    }
+
+    nav ul {
+      list-style: none;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    nav a {
+      display: block;
+      padding: 0.95rem 1rem;
+      border-radius: 0.95rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    main {
+      padding: 2rem;
+      display: grid;
+      gap: 1.75rem;
+    }
+
+    .header-panel,
+    .filters,
+    .stats-grid,
+    .analytics-grid {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 1.75rem;
+      padding: 1.75rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    }
+
+    .header-panel h1 {
+      font-size: clamp(1.9rem, 2.5vw, 2.5rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .header-panel p {
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    .filters {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .filters label {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      color: var(--muted);
+    }
+
+    .filters select {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: #0c1728;
+      color: var(--text);
+      outline: none;
+    }
+
+    .stats-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-card {
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.12);
+      display: grid;
+      gap: 1rem;
+    }
+
+    .stat-card span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .stat-card strong {
+      font-size: 2.4rem;
+      letter-spacing: -0.03em;
+    }
+
+    .analytics-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+
+    .chart-panel {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .chart-panel h2,
+    .chart-panel p {
+      margin: 0;
+    }
+
+    .chart-panel canvas {
+      width: 100%;
+      border-radius: 1.5rem;
+      background: #0b1526;
+    }
+
+    .chart-legend {
+      display: grid;
+      gap: 0.7rem;
+      padding-top: 0.5rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--muted);
+    }
+
+    .legend-swatch {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 0.35rem;
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div></div>
+        <h1>Team Dashboard</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a class="active" href="dashboard.html">Dashboard</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="header-panel">
+        <h1>Workforce analytics</h1>
+        <p>View total staff, working days, expenses, and days off with interactive charts and region/month/year filters.</p>
+      </section>
+
+      <section class="filters">
+        <div>
+          <label for="region-select">Filter by region</label>
+          <select id="region-select">
+            <option value="All">All regions</option>
+            <option value="North">North</option>
+            <option value="South">South</option>
+            <option value="East">East</option>
+            <option value="West">West</option>
+          </select>
+        </div>
+        <div>
+          <label for="month-select">Filter by month</label>
+          <select id="month-select">
+            <option value="All">All months</option>
+            <option value="Jan">January</option>
+            <option value="Feb">February</option>
+            <option value="Mar">March</option>
+            <option value="Apr">April</option>
+            <option value="May">May</option>
+            <option value="Jun">June</option>
+            <option value="Jul">July</option>
+            <option value="Aug">August</option>
+            <option value="Sep">September</option>
+            <option value="Oct">October</option>
+            <option value="Nov">November</option>
+            <option value="Dec">December</option>
+          </select>
+        </div>
+        <div>
+          <label for="year-select">Filter by year</label>
+          <select id="year-select">
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="stats-grid" id="stats-grid">
+        <article class="stat-card">
+          <span>Total staff</span>
+          <strong id="total-staff">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>Total days working</span>
+          <strong id="total-working">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>Total expenses</span>
+          <strong id="total-expenses">$0</strong>
+        </article>
+        <article class="stat-card">
+          <span>Total day off</span>
+          <strong id="total-days-off">0</strong>
+        </article>
+      </section>
+
+      <section class="analytics-grid">
+        <div class="chart-panel">
+          <div>
+            <h2>Work/Off distribution</h2>
+            <p>Pie chart for total working days versus total day off.</p>
+          </div>
+          <canvas id="pie-chart" width="560" height="360"></canvas>
+          <div class="chart-legend" id="pie-legend"></div>
+        </div>
+
+        <div class="chart-panel">
+          <div>
+            <h2>Monthly expenses</h2>
+            <p>Bar chart showing expense totals per selected month or across all months.</p>
+          </div>
+          <canvas id="bar-chart" width="420" height="360"></canvas>
+          <div class="chart-legend" id="bar-legend"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const dataset = {
+      North: {
+        2025: {
+          Jan: { staff: 38, workingDays: 20, expenses: 5200, daysOff: 10 },
+          Feb: { staff: 40, workingDays: 18, expenses: 5400, daysOff: 8 },
+          Mar: { staff: 42, workingDays: 22, expenses: 6100, daysOff: 6 },
+          Apr: { staff: 43, workingDays: 21, expenses: 5900, daysOff: 7 },
+          May: { staff: 44, workingDays: 23, expenses: 6200, daysOff: 5 },
+          Jun: { staff: 41, workingDays: 20, expenses: 5850, daysOff: 8 },
+          Jul: { staff: 40, workingDays: 22, expenses: 6100, daysOff: 7 },
+          Aug: { staff: 42, workingDays: 21, expenses: 6000, daysOff: 8 },
+          Sep: { staff: 39, workingDays: 20, expenses: 5700, daysOff: 9 },
+          Oct: { staff: 41, workingDays: 22, expenses: 6250, daysOff: 7 },
+          Nov: { staff: 40, workingDays: 19, expenses: 5950, daysOff: 10 },
+          Dec: { staff: 38, workingDays: 18, expenses: 5600, daysOff: 11 }
+        },
+        2026: {
+          Jan: { staff: 45, workingDays: 21, expenses: 6550, daysOff: 9 },
+          Feb: { staff: 46, workingDays: 20, expenses: 6700, daysOff: 8 },
+          Mar: { staff: 47, workingDays: 22, expenses: 7000, daysOff: 7 },
+          Apr: { staff: 48, workingDays: 21, expenses: 7150, daysOff: 6 },
+          May: { staff: 49, workingDays: 23, expenses: 7350, daysOff: 5 },
+          Jun: { staff: 47, workingDays: 20, expenses: 6900, daysOff: 8 },
+          Jul: { staff: 46, workingDays: 22, expenses: 7100, daysOff: 7 },
+          Aug: { staff: 47, workingDays: 21, expenses: 7050, daysOff: 8 },
+          Sep: { staff: 45, workingDays: 20, expenses: 6800, daysOff: 9 },
+          Oct: { staff: 46, workingDays: 22, expenses: 7250, daysOff: 7 },
+          Nov: { staff: 47, workingDays: 19, expenses: 6950, daysOff: 10 },
+          Dec: { staff: 44, workingDays: 18, expenses: 6600, daysOff: 11 }
+        }
+      },
+      South: {
+        2025: {
+          Jan: { staff: 32, workingDays: 19, expenses: 4600, daysOff: 12 },
+          Feb: { staff: 33, workingDays: 18, expenses: 4720, daysOff: 11 },
+          Mar: { staff: 34, workingDays: 21, expenses: 5050, daysOff: 9 },
+          Apr: { staff: 35, workingDays: 20, expenses: 5200, daysOff: 10 },
+          May: { staff: 36, workingDays: 22, expenses: 5450, daysOff: 8 },
+          Jun: { staff: 35, workingDays: 19, expenses: 5000, daysOff: 11 },
+          Jul: { staff: 34, workingDays: 21, expenses: 5300, daysOff: 9 },
+          Aug: { staff: 35, workingDays: 20, expenses: 5200, daysOff: 10 },
+          Sep: { staff: 33, workingDays: 18, expenses: 4950, daysOff: 12 },
+          Oct: { staff: 34, workingDays: 21, expenses: 5400, daysOff: 9 },
+          Nov: { staff: 33, workingDays: 19, expenses: 5120, daysOff: 11 },
+          Dec: { staff: 32, workingDays: 18, expenses: 4850, daysOff: 13 }
+        },
+        2026: {
+          Jan: { staff: 37, workingDays: 20, expenses: 5100, daysOff: 11 },
+          Feb: { staff: 38, workingDays: 19, expenses: 5250, daysOff: 10 },
+          Mar: { staff: 39, workingDays: 22, expenses: 5500, daysOff: 8 },
+          Apr: { staff: 40, workingDays: 20, expenses: 5600, daysOff: 9 },
+          May: { staff: 41, workingDays: 22, expenses: 5800, daysOff: 8 },
+          Jun: { staff: 39, workingDays: 19, expenses: 5400, daysOff: 11 },
+          Jul: { staff: 38, workingDays: 21, expenses: 5600, daysOff: 9 },
+          Aug: { staff: 39, workingDays: 20, expenses: 5550, daysOff: 10 },
+          Sep: { staff: 37, workingDays: 19, expenses: 5300, daysOff: 11 },
+          Oct: { staff: 38, workingDays: 21, expenses: 5750, daysOff: 9 },
+          Nov: { staff: 39, workingDays: 18, expenses: 5450, daysOff: 12 },
+          Dec: { staff: 36, workingDays: 18, expenses: 5200, daysOff: 13 }
+        }
+      },
+      East: {
+        2025: {
+          Jan: { staff: 29, workingDays: 18, expenses: 4100, daysOff: 13 },
+          Feb: { staff: 30, workingDays: 17, expenses: 4220, daysOff: 12 },
+          Mar: { staff: 31, workingDays: 20, expenses: 4500, daysOff: 10 },
+          Apr: { staff: 32, workingDays: 19, expenses: 4650, daysOff: 11 },
+          May: { staff: 33, workingDays: 21, expenses: 4950, daysOff: 9 },
+          Jun: { staff: 31, workingDays: 18, expenses: 4550, daysOff: 12 },
+          Jul: { staff: 30, workingDays: 20, expenses: 4700, daysOff: 10 },
+          Aug: { staff: 31, workingDays: 19, expenses: 4650, daysOff: 11 },
+          Sep: { staff: 29, workingDays: 18, expenses: 4400, daysOff: 13 },
+          Oct: { staff: 30, workingDays: 20, expenses: 4750, daysOff: 10 },
+          Nov: { staff: 31, workingDays: 18, expenses: 4480, daysOff: 12 },
+          Dec: { staff: 29, workingDays: 17, expenses: 4250, daysOff: 14 }
+        },
+        2026: {
+          Jan: { staff: 34, workingDays: 19, expenses: 4600, daysOff: 12 },
+          Feb: { staff: 35, workingDays: 18, expenses: 4750, daysOff: 11 },
+          Mar: { staff: 36, workingDays: 21, expenses: 5000, daysOff: 9 },
+          Apr: { staff: 37, workingDays: 19, expenses: 5150, daysOff: 10 },
+          May: { staff: 38, workingDays: 21, expenses: 5350, daysOff: 9 },
+          Jun: { staff: 36, workingDays: 18, expenses: 4950, daysOff: 12 },
+          Jul: { staff: 35, workingDays: 20, expenses: 5100, daysOff: 10 },
+          Aug: { staff: 36, workingDays: 19, expenses: 5050, daysOff: 11 },
+          Sep: { staff: 34, workingDays: 18, expenses: 4850, daysOff: 12 },
+          Oct: { staff: 35, workingDays: 20, expenses: 5200, daysOff: 10 },
+          Nov: { staff: 36, workingDays: 17, expenses: 4950, daysOff: 12 },
+          Dec: { staff: 33, workingDays: 17, expenses: 4700, daysOff: 14 }
+        }
+      },
+      West: {
+        2025: {
+          Jan: { staff: 41, workingDays: 20, expenses: 5800, daysOff: 9 },
+          Feb: { staff: 42, workingDays: 19, expenses: 5950, daysOff: 8 },
+          Mar: { staff: 43, workingDays: 22, expenses: 6350, daysOff: 7 },
+          Apr: { staff: 44, workingDays: 21, expenses: 6500, daysOff: 7 },
+          May: { staff: 45, workingDays: 23, expenses: 6750, daysOff: 6 },
+          Jun: { staff: 44, workingDays: 20, expenses: 6400, daysOff: 9 },
+          Jul: { staff: 43, workingDays: 22, expenses: 6600, daysOff: 8 },
+          Aug: { staff: 44, workingDays: 21, expenses: 6550, daysOff: 8 },
+          Sep: { staff: 42, workingDays: 20, expenses: 6300, daysOff: 9 },
+          Oct: { staff: 43, workingDays: 22, expenses: 6800, daysOff: 8 },
+          Nov: { staff: 42, workingDays: 19, expenses: 6520, daysOff: 9 },
+          Dec: { staff: 41, workingDays: 18, expenses: 6200, daysOff: 10 }
+        },
+        2026: {
+          Jan: { staff: 47, workingDays: 21, expenses: 7050, daysOff: 8 },
+          Feb: { staff: 48, workingDays: 20, expenses: 7250, daysOff: 7 },
+          Mar: { staff: 49, workingDays: 22, expenses: 7600, daysOff: 6 },
+          Apr: { staff: 50, workingDays: 21, expenses: 7750, daysOff: 6 },
+          May: { staff: 51, workingDays: 23, expenses: 8000, daysOff: 5 },
+          Jun: { staff: 49, workingDays: 20, expenses: 7600, daysOff: 8 },
+          Jul: { staff: 48, workingDays: 22, expenses: 7800, daysOff: 7 },
+          Aug: { staff: 49, workingDays: 21, expenses: 7750, daysOff: 7 },
+          Sep: { staff: 47, workingDays: 20, expenses: 7450, daysOff: 9 },
+          Oct: { staff: 48, workingDays: 22, expenses: 7900, daysOff: 7 },
+          Nov: { staff: 49, workingDays: 19, expenses: 7600, daysOff: 8 },
+          Dec: { staff: 46, workingDays: 18, expenses: 7300, daysOff: 10 }
+        }
+      }
+    };
+
+    const regionSelect = document.getElementById('region-select');
+    const monthSelect = document.getElementById('month-select');
+    const yearSelect = document.getElementById('year-select');
+    const totalStaff = document.getElementById('total-staff');
+    const totalWorking = document.getElementById('total-working');
+    const totalExpenses = document.getElementById('total-expenses');
+    const totalDaysOff = document.getElementById('total-days-off');
+    const pieCanvas = document.getElementById('pie-chart');
+    const barCanvas = document.getElementById('bar-chart');
+    const pieLegend = document.getElementById('pie-legend');
+    const barLegend = document.getElementById('bar-legend');
+
+    const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const regionNames = ['North','South','East','West'];
+    const expenseColor = '#38bdf8';
+    const workingColor = '#22c55e';
+    const offColor = '#fbbf24';
+    const staffColor = '#a855f7';
+
+    function collectData() {
+      const region = regionSelect.value;
+      const month = monthSelect.value;
+      const year = yearSelect.value;
+      const sourceRegions = region === 'All' ? regionNames : [region];
+
+      let totals = { staff: 0, workingDays: 0, expenses: 0, daysOff: 0 };
+      let monthlyExpenses = {};
+
+      sourceRegions.forEach(regionKey => {
+        const yearData = dataset[regionKey][year];
+        monthLabels.forEach(label => {
+          const row = yearData[label];
+          if (!row) return;
+          if (month === 'All' || month === label) {
+            totals.staff += row.staff;
+            totals.workingDays += row.workingDays;
+            totals.expenses += row.expenses;
+            totals.daysOff += row.daysOff;
+          }
+
+          if (month === 'All') {
+            monthlyExpenses[label] = (monthlyExpenses[label] || 0) + row.expenses;
+          }
+        });
+      });
+
+      if (month !== 'All') {
+        monthlyExpenses[month] = totals.expenses;
+      }
+
+      return { totals, monthlyExpenses };
+    }
+
+    function formatNumber(value) {
+      return value.toLocaleString();
+    }
+
+    function renderStats(totals) {
+      totalStaff.textContent = formatNumber(totals.staff);
+      totalWorking.textContent = formatNumber(totals.workingDays);
+      totalExpenses.textContent = `$${formatNumber(totals.expenses)}`;
+      totalDaysOff.textContent = formatNumber(totals.daysOff);
+    }
+
+    function clearCanvas(canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawPieChart(totals) {
+      const ctx = pieCanvas.getContext('2d');
+      clearCanvas(pieCanvas);
+      const data = [totals.workingDays, totals.daysOff];
+      const labels = ['Working days', 'Day off'];
+      const colors = [workingColor, offColor];
+      const centerX = pieCanvas.width / 2;
+      const centerY = pieCanvas.height / 2;
+      const radius = Math.min(centerX, centerY) - 30;
+      const total = data.reduce((sum, value) => sum + value, 0) || 1;
+      let start = -Math.PI / 2;
+
+      data.forEach((value, index) => {
+        const slice = (value / total) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, start, start + slice);
+        ctx.closePath();
+        ctx.fillStyle = colors[index];
+        ctx.fill();
+        start += slice;
+      });
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = '#1b2a46';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+
+      pieLegend.innerHTML = labels.map((label, index) => `
+        <div class="legend-item">
+          <span class="legend-swatch" style="background:${colors[index]}"></span>
+          <span>${label}: ${formatNumber(data[index])}</span>
+        </div>`
+      ).join('');
+    }
+
+    function drawBarChart(monthlyExpenses) {
+      const ctx = barCanvas.getContext('2d');
+      clearCanvas(barCanvas);
+      const labels = Object.keys(monthlyExpenses);
+      const values = Object.values(monthlyExpenses);
+      const maxValue = Math.max(...values, 1);
+      const padding = 50;
+      const chartWidth = barCanvas.width - padding * 2;
+      const chartHeight = barCanvas.height - padding * 2;
+      const barWidth = chartWidth / Math.max(values.length, 1) - 16;
+
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, padding);
+      ctx.lineTo(padding, padding + chartHeight);
+      ctx.lineTo(padding + chartWidth, padding + chartHeight);
+      ctx.stroke();
+
+      values.forEach((value, index) => {
+        const x = padding + index * (barWidth + 16) + 8;
+        const height = (value / maxValue) * (chartHeight - 20);
+        ctx.fillStyle = expenseColor;
+        ctx.fillRect(x, padding + chartHeight - height, barWidth, height);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '12px Inter, system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText(labels[index], x + barWidth / 2, padding + chartHeight + 18);
+      });
+
+      barLegend.innerHTML = `
+        <div class="legend-item">
+          <span class="legend-swatch" style="background:${expenseColor}"></span>
+          <span>Expenses</span>
+        </div>`;
+    }
+
+    function refreshDashboard() {
+      const { totals, monthlyExpenses } = collectData();
+      renderStats(totals);
+      drawPieChart(totals);
+      drawBarChart(monthlyExpenses);
+    }
+
+    [regionSelect, monthSelect, yearSelect].forEach(select => {
+      select.addEventListener('change', refreshDashboard);
+    });
+
+    window.addEventListener('DOMContentLoaded', refreshDashboard);
+  </script>
+</body>
+</html>
